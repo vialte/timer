@@ -1,0 +1,27 @@
+#include "stm32g0xx.h"
+/*1)Exercício 1 : “Hello word!”
+Este é o clássico dos clássicos. Elabore um programa capaz de piscar o Led
+com um ciclo de trabalho de 50% (metade do tempo ligado, metade
+desligado) e com período de 200ms (5 Hz ou 5 piscadas/segundo). O led é
+ativo em LOW e conectado ao PC0. Utilize o TIM11.*/
+
+main(){
+	RCC->IOPENR=0x3f;//liga clock
+	GPIOA->MODER=0x28000400;
+
+	GPIOC->MODER=0x01;//led
+	RCC->APBENR1=0x20;
+
+	TIM7->PSC=1599;
+	TIM7->ARR=999;
+	TIM7->CR1 |=0x01;
+
+	while(1){
+		if(TIM7->SR & 0x1){
+			GPIOC->ODR ^=0x1;
+			TIM7->SR &=~0x1;
+
+			//inverte o estado
+		}
+	}
+}
